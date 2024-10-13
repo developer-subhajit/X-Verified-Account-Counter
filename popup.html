@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verified Account Counter</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        h1 {
+            color: #1da1f2;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #startCount {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #1da1f2;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #startCount:hover {
+            background-color: #1991db;
+        }
+
+        #count-display {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #14171a;
+        }
+    </style>
+</head>
+<body>
+    <h1>Verified Account Counter</h1>
+    <button id="startCount">Start Count</button>
+    <div id="count-display">Verified Accounts: 0</div>
+    <script src="popup.js"></script>
+</body>
+</html>
