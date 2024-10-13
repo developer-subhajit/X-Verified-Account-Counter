@@ -118,15 +118,15 @@ const Counter = (() => {
         const contentContainer = cell.querySelector('[data-testid="UserCell"]');
         if (contentContainer) {
             Object.assign(contentContainer.style, {
-                border: isVerified ? "3px solid #008080" : "3px solid #800000",
+                border: isVerified ? "5px solid #20B2AA" : "5px solid #FF6347",
                 borderRadius: "12px",
                 margin: "8px 0",
                 padding: "8px",
                 boxSizing: "border-box",
                 display: "block",
                 boxShadow: isVerified
-                    ? "0 2px 4px rgba(29, 161, 242, 0.2)"
-                    : "0 1px 2px rgba(101, 119, 134, 0.2)",
+                    ? "0 4px 8px rgba(32, 178, 170, 0.3)"
+                    : "0 2px 4px rgba(255, 99, 71, 0.3)",
                 transition: "all 0.3s ease",
             });
         }
@@ -183,7 +183,11 @@ const Counter = (() => {
             return;
         }
 
-        UIManager.updateStatus(0, 0, "All followers loaded. Initiating count...");
+        UIManager.updateStatus(
+            0,
+            0,
+            "All followers loaded. Initiating count..."
+        );
         await processVisibleAccounts();
     };
 
