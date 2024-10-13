@@ -1,5 +1,5 @@
 const Counter = (() => {
-    let isCountingVerified = false,
+    let isCountingInProgress = false,
         verifiedCount = 0,
         totalCount = 0,
         isScrolling = false;
@@ -10,10 +10,10 @@ const Counter = (() => {
     const smoothScroll = (duration, distance, direction = "down") =>
         new Promise((resolve) => {
             const start = window.scrollY;
-            const startTime = performance.now ? performance.now() : Date.now();
+            const startTime = performance.now();
 
             const scroll = () => {
-                const now = performance.now ? performance.now() : Date.now();
+                const now = performance.now();
                 const time = Math.min(1, (now - startTime) / duration);
                 window.scrollTo(
                     0,
@@ -66,10 +66,6 @@ const Counter = (() => {
 
             await smoothScroll(200, 700, "down");
             await waitForNewContent();
-
-            if (scrollHeight === document.documentElement.scrollHeight) {
-                await new Promise((resolve) => setTimeout(resolve, 500));
-            }
         }
     };
 
@@ -99,12 +95,11 @@ const Counter = (() => {
 
         UIManager.updateStatus(verifiedCount, totalCount, "Counting...");
 
-        if (window.scrollY > 0 && isCountingVerified) {
-            await smoothScroll(500, 300, "up"); // Slower upward scroll: 300px over 1 second
+        if (window.scrollY > 0 && isCountingInProgress) {
+            await smoothScroll(500, 300, "up");
             await processVisibleAccounts();
         } else {
             stopCounting();
-            return;
         }
     };
 
@@ -123,15 +118,15 @@ const Counter = (() => {
         const contentContainer = cell.querySelector('[data-testid="UserCell"]');
         if (contentContainer) {
             Object.assign(contentContainer.style, {
-                border: isVerified ? "5px solid #20B2AA" : "3px solid #FF6347",
+                border: isVerified ? "3px solid #008080" : "3px solid #800000",
                 borderRadius: "12px",
                 margin: "8px 0",
                 padding: "8px",
                 boxSizing: "border-box",
                 display: "block",
                 boxShadow: isVerified
-                    ? "0 4px 8px rgba(32, 178, 170, 0.3)"
-                    : "0 2px 4px rgba(255, 99, 71, 0.3)",
+                    ? "0 2px 4px rgba(29, 161, 242, 0.2)"
+                    : "0 1px 2px rgba(101, 119, 134, 0.2)",
                 transition: "all 0.3s ease",
             });
         }
@@ -157,7 +152,7 @@ const Counter = (() => {
                 left: "5px",
                 backgroundColor: isVerifiedAccount
                     ? "rgba(29, 161, 242, 0.8)"
-                    : "rgba(0, 0, 0, 0.7)", // Twitter blue for verified
+                    : "rgba(101, 119, 134, 0.7)",
                 color: "white",
                 padding: "2px 6px",
                 borderRadius: "10px",
@@ -171,11 +166,11 @@ const Counter = (() => {
     };
 
     const startCounting = async () => {
-        if (isCountingVerified) return;
-        isCountingVerified = isScrolling = true;
+        if (isCountingInProgress) return;
+        isCountingInProgress = isScrolling = true;
         verifiedCount = totalCount = 0;
 
-        UIManager.updateStatus(0, 0, "Starting to load followers...");
+        UIManager.updateStatus(0, 0, "Initiating follower loading process...");
         await scrollToBottom();
 
         if (!isScrolling) {
@@ -184,39 +179,32 @@ const Counter = (() => {
                 0,
                 "Scrolling interrupted. Please try again."
             );
-            isCountingVerified = false;
+            isCountingInProgress = false;
             return;
         }
 
-        UIManager.updateStatus(0, 0, "All followers loaded. Starting count...");
+        UIManager.updateStatus(0, 0, "All followers loaded. Initiating count...");
         await processVisibleAccounts();
     };
 
     const stopCounting = () => {
         isScrolling = false;
-        isCountingVerified = false;
+        isCountingInProgress = false;
         UIManager.updateStatus(
             verifiedCount,
             totalCount,
-            `Counting finished. Verified: ${verifiedCount}, Total: ${totalCount}`
+            `Count completed. Verified: ${verifiedCount}, Total: ${totalCount}`
         );
         const button = document.getElementById("startCount");
         if (button) {
             button.textContent = "Start Count";
-            button.style.backgroundColor = "#1DA1F2"; // Use Twitter blue color
+            button.style.backgroundColor = "#1DA1F2";
         }
     };
 
-    const initialize = () => {
-        if (window.location.href.endsWith("followers")) {
-            // Initialization code (if needed)
-        }
-    };
-
-    return { initialize, startCounting, stopCounting };
+    return { startCounting, stopCounting };
 })();
 
 if (window.location.href.endsWith("followers")) {
-    console.log("counter.js loaded");
-    Counter.initialize();
+    console.log("Counter module loaded successfully");
 }
